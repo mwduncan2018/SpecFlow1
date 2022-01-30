@@ -2,11 +2,10 @@
 using System.Drawing;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Firefox;
-using OpenQA.Selenium.Opera;
 using OpenQA.Selenium.Remote;
 using SpecFlowBdd.Config;
-using SpecFlowBdd.Grid;
 
 namespace SpecFlowBdd.Drivers
 {
@@ -29,9 +28,8 @@ namespace SpecFlowBdd.Drivers
             _windowSize = new Size(
                 asp.GetSetting().HorizontalPixels,
                 asp.GetSetting().VerticalPixels);
-            _gridIp = Environment.GetEnvironmentVariable("GRID_IP") == null ?
-                Environment.GetEnvironmentVariable("GRID_IP") :
-                asp.GetSetting().GridIp;
+            _gridIp = asp.GetSetting().GridIp;
+            //_gridIp = Environment.GetEnvironmentVariable("GRID_IP") == null ? Environment.GetEnvironmentVariable("GRID_IP") : asp.GetSetting().GridIp;
         }
 
         public IWebDriver GetDriver()
@@ -46,21 +44,41 @@ namespace SpecFlowBdd.Drivers
 
         private IWebDriver? GetRemoteDriver()
         {
-            new GridScheduler().WaitForAvailableNode();
+            if (_driverType == "random")
+            {
+                int random = new Random().Next(1, 4);
+                if (random == 1)
+                {
+                    FirefoxOptions options = new FirefoxOptions();
+                    return new RemoteWebDriver(new Uri(_gridIp), options.ToCapabilities(), TimeSpan.FromMinutes(30));
+                }
+                if (random == 2)
+                {
+                    ChromeOptions options = new ChromeOptions();
+                    return new RemoteWebDriver(new Uri(_gridIp), options.ToCapabilities(), TimeSpan.FromMinutes(30));
+                }
+                if (random == 3)
+                {
+                    EdgeOptions options = new EdgeOptions();
+                    return new RemoteWebDriver(new Uri(_gridIp), options.ToCapabilities(), TimeSpan.FromMinutes(30));
+                }
+                return null;
+            }
             if (_driverType == "firefox")
             {
                 FirefoxOptions options = new FirefoxOptions();
-                return new RemoteWebDriver(new Uri(_gridIp), options);
+                return new RemoteWebDriver(new Uri(_gridIp), options.ToCapabilities(), TimeSpan.FromMinutes(30));
             }
             if (_driverType == "chrome")
             {
                 ChromeOptions options = new ChromeOptions();
-                return new RemoteWebDriver(new Uri(_gridIp), options);
+                return new RemoteWebDriver(new Uri(_gridIp), options.ToCapabilities(), TimeSpan.FromMinutes(30));
+                //return new RemoteWebDriver(new Uri(_gridIp), options);
             }
-            if (_driverType == "opera")
+            if (_driverType == "edge")
             {
-                OperaOptions options = new OperaOptions();
-                return new RemoteWebDriver(new Uri(_gridIp), options);
+                EdgeOptions options = new EdgeOptions();
+                return new RemoteWebDriver(new Uri(_gridIp), options.ToCapabilities(), TimeSpan.FromMinutes(30));
             }
             return null;
         }
@@ -71,8 +89,8 @@ namespace SpecFlowBdd.Drivers
                 return new FirefoxDriver();
             if (_driverType == "chrome")
                 return new ChromeDriver();
-            if (_driverType == "opera")
-                return new OperaDriver();
+            if (_driverType == "edge")
+                return new EdgeDriver();
             return null;
         }
 

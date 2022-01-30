@@ -67,13 +67,12 @@ namespace SpecFlowBdd.Hooks
 
         /*
         [BeforeTestRun]
-        public void BeforeTestRun()
+        public static void BeforeTestRun()
         {
-            //?
         }
 
         [AfterTestRun]
-        public void DeleteAllTestData()
+        public static void DeleteAllTestData()
         {
             var pages = new Pages(new DriverProvider().GetDriver());
             pages.NavbarPage.GoToProductList();

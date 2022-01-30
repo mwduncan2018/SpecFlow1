@@ -16,9 +16,11 @@ namespace SpecFlowBdd.Config
         {
             configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetParent(
-                    Directory.GetCurrentDirectory()).ToString() + "\\SpecFlowBdd\\Config")
+                    //Directory.GetCurrentDirectory()).ToString() + "\\SpecFlowBdd\\Config")
+                    Directory.GetCurrentDirectory()).ToString() + "\\Config")
                 .AddJsonFile("appsettings.json", false, true)
                 .Build();
         }
+
     }
 }

@@ -1,14 +1,19 @@
 ﻿using OpenQA.Selenium;
 using SpecFlowBdd.Config;
-using System;
-using System.Collections.Generic;
-using System.Text;
+
 
 namespace SpecFlowBdd.PageModels
 {
     public class Pages
     {
-        public void OpenApp() => Driver.Navigate().GoToUrl(new AppSettingsProvider().GetSetting().Url);
+        public void OpenApp()
+        {
+            var app = new AppSettingsProvider();
+            if (app.GetSetting().Environment == "local")
+                Driver.Navigate().GoToUrl(new AppSettingsProvider().GetSetting().LocalUrl);
+            if (app.GetSetting().Environment == "remote")
+                Driver.Navigate().GoToUrl(new AppSettingsProvider().GetSetting().RemoteUrl);
+        }
 
         public IWebDriver Driver;
         public NavbarPage NavbarPage;
